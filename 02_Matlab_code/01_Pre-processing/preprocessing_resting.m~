@@ -92,8 +92,8 @@ for iSub = 1:length(subjects)
     
     data_cell = {data_clean, data_art}; 
     
-    for iD = 1:length(data_cell)
-        data_prep{iD} = [];
+    for iD = 1:length(data_cell): 
+        data_prep{iD} = []
         ALLEEG.data = data_cell{iD};
         ALLEEG.chanlocs = chanlocs;
         ALLEEG.nbchan = length(chanlocs); 
@@ -102,13 +102,13 @@ for iSub = 1:length(subjects)
         EEGOUT = pop_interp(ALLEEG, [Bad_channels.indChanlocs], 'spherical');
         data_prep{iD} = EEGOUT.data;
         
-        ALLEEG.data = [];
+        ALLEEG.data = []
     
     end
     clear Bad_channels
     
     data_clean = data_prep{1}; 
-    data_art = data_prep{2}; 
+    data_ar
     
     % STEP 5: dividing the data into the 1s epochs
     fs = 1000; 

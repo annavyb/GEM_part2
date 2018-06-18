@@ -1,13 +1,5 @@
 
-% Preprocessing of the spike epochs data. 
-% The following steps are performed on the data 
-% 1) Going from 257 electrodes to 204 electrodes (optional)
-% 2) Converting EGI channel order into chanlocs (eeglab) channels order
-% 3) Finding the bad channels in the chanlocs (eeglab) configuration
-% 4) Interpolating bad channels using the "spherical" option of the eeglab 
-% built-in function pop-interp
-% 5) Saving the pre-processed data
-
+% Retrieving the information about the bad channels from the epoched data 
 % -------------------------------------------------------------------------
 %
 %  Version: V1 2018 05 11
@@ -15,22 +7,23 @@
 % 
 % ------------------------- BEGIN CODE ------------------------------------
 
+
 clc 
 clear all
 close all
 
 CONFIG_204 = 0; % Reduce to the 204 configuration
 
-% STEP 1: loading the data
+% STEP 1: loading the Data
 
-% SPIKE DATA VARIABLES  
+% SPIKE Data VARIABLES  
 % - channels_to_keep - those are the good channels 
-% - data - the actual data in the format: time x electrodes x epoch
+% - Data - the actual Data in the format: time x electrodes x epoch
 % - fs - sampling frequency
 
 addpath("../01_Pre-processing")
 
-Path = "/Users/annavybornova/EPFL/Master_4/GEM/GEM_part2/01_Data/20180424EEGspikes/"; 
+Path = "../../01_Data/20180424EEGresting/Resting_45epochs/"; 
 subjects = ["03", "07", "11", "14", "16", "19"]; 
 
 FileNameChan257 = '/Users/annavybornova/EPFL/Master_4/GEM/01Data/HUG_Seizure_Epochs_V04_05/EGI 257.Geneva Average 13.10-10.xyz';
@@ -42,16 +35,12 @@ FileNameChan204 = '/Users/annavybornova/EPFL/Master_4/GEM/01Data/HUG_Seizure_Epo
 chanlocs_257 = readlocs(FileNameChan257);
 chanlocs_204 = readlocs(FileNameChan204);
 
-% load the EEGlab data structure
-load("/Users/annavybornova/EPFL/Master_4/GEM/GEM_part2/01_Data/DataStructure.mat");
+% load the EEGlab Data structure
+load("../../01_Data/DataStructure.mat");
 
 for iSub = 1:length(subjects)
-%     chanlocs_257 = readlocs(FileNameChan257);
-%     chanlocs_204 = readlocs(FileNameChan204);
-%     [~ , chan_egi_257] = readFileChanloc(FileNameChan257, 257); 
-%     [~ , chan_egi_204] = readFileChanloc(FileNameChan204, 204); 
     strcat(" .. Now processing subject ", subjects(iSub))
-    filename = strcat(Path, "sub-", subjects(iSub), ".mat"); 
+    filename = strcat(Path, "sub-", subjects(iSub), "_rest_45ep.mat"); 
     load(filename); 
     
     % Bad_channels structure contains the following fields 
@@ -60,14 +49,13 @@ for iSub = 1:length(subjects)
     % indChanloc - in the chanlocs configuration 
     % labelsChanlocs - labels in the chanloc configuration
     
-    Bad_channels.indEGI = setdiff(1:size(data, 2), channels_to_keep); 
+    Bad_channels.indEGI = setdiff(1:size(Data, 2), channels_to_keep); 
     Bad_channels.label = chan_egi_257(Bad_channels.indEGI); 
     
     if CONFIG_204
     % going from 257 to 204 channels 
     
         ch_to_delete =  find(~ismember(chan_egi_257, chan_egi_204));
-        data(:, ch_to_delete, :) = [];
         chan_egi_257(ch_to_delete) = []; 
  
         chanlocs = chanlocs_204; 
@@ -75,10 +63,6 @@ for iSub = 1:length(subjects)
         chanlocs = chanlocs_257; 
     end
     
-    % STEP 2: convert egi into chanlocs
-    ind_reorder = convertEGItoChanlocs({chanlocs.labels},chan_egi_257);
-    data = data(:,ind_reorder, :);
-
     
     % STEP 3: find the indeces of the bad chanels in the chanloc configuration 
     Bad_channels.indChanlocs = zeros(1,3); 
@@ -94,23 +78,11 @@ for iSub = 1:length(subjects)
     
     Bad_channels.indChanlocs(Bad_channels.indChanlocs == 0) = []; 
     
-    % STEP 4: Bad channels handling - interpolation
-    % load a datastructure 
-    data_prep = []
-    for iEpoch = 1:size(data, 3)
-        ALLEEG.data = data(:, :, iEpoch)';
-        ALLEEG.chanlocs = chanlocs;
-        ALLEEG.nbchan = length(chanlocs); 
-        ALLEEG.times = size(data,1); 
-        ALLEEG.srate = size(data,1)-1; 
-        EEGOUT = pop_interp(ALLEEG, [Bad_channels.indChanlocs], 'spherical');
-        data_prep(:, :, iEpoch) = EEGOUT.data;
-    end
+    % STEP 5: save the BadChannels  
+    PathSave = "/Users/annavybornova/EPFL/Master_4/GEM/GEM_part2/01_Data/20180424EEGresting/BadChannels/"; 
+    name_save = strcat(PathSave, "BadChan", subjects(iSub), ".mat"); 
+    save(name_save, "Bad_channels"); 
     
     clear Bad_channels
-    
-    % STEP 5: save the data 
-    name_save = strcat(Path, "sub-", subjects(iSub), "pre-processed.mat"); 
-    save(name_save, "data_prep")
 end 
  
