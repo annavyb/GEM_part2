@@ -5,9 +5,9 @@ The new data that Margherita and Serge gave to us contain
 
 —— 
 
-This data was retrieved from the EPI format. However I use eeglab functions to visualize the topographies of the GFT functions and the EEG maps. 
+This data was retrieved from the EGI format. However I use eeglab functions to visualize the topographies of the GFT functions and the EEG maps. 
 
-The order of the electrodes differ in the EPI format (xyz file) and when this .xyz file is read by the reallocs function of the EEG lab
+The order of the electrodes differ in the EGI format (xyz file) and when this .xyz file is read by the reallocs function of the EEG lab
 
 Therefore I need to find the mapping from the .xyz to the .locs format, to make sure that the EEG signal corresponds to the correct location in space 
 
