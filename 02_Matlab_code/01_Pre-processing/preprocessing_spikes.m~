@@ -31,8 +31,9 @@ CONFIG_204 = 0; % Reduce to the 204 configuration
 addpath("../01_Pre-processing")
 
 Path = "/Users/annavybornova/EPFL/Master_4/GEM/GEM_part2/01_Data/20180424EEGspikes/"; 
-
 subjects = ["03", "07", "11", "14", "16", "19"];
+electrode.label = ["1", "225", "T10", "181", "FT9", "220", "220"]; 
+electrode.indChanlocs = [225, 243, 252, 250, 10, 244, 24]
 
 FileNameChan257 = '/Users/annavybornova/EPFL/Master_4/GEM/01Data/HUG_Seizure_Epochs_V04_05/EGI 257.Geneva Average 13.10-10.xyz';
 FileNameChan204 = '/Users/annavybornova/EPFL/Master_4/GEM/01Data/HUG_Seizure_Epochs_V04_05/EGI 204.Geneva Average 13.10-10.xyz';

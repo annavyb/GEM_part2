@@ -49,7 +49,7 @@ SpikeElectrode.indEGI = [1, 225, 210, 181, 67, 220, 220];
 
 % selecting the subject 
 
-subID = 4; 
+subID = 1; 
 Params.Slepian.CONST_SEIZURE_NODE = SpikeElectrode.indChanlocs(subID); 
 
 load(strcat(PathResting,'/sub-', subjects(subID), '_rest_clean_preprocessed.mat')); 
@@ -86,23 +86,7 @@ end
 
 figure, 
 plot(d2); 
-title("Mahalanobis distance Slepian"); 
-xlabel("Time points"); 
-ylabel("Mahalanobis distance"); 
-
-
-
-% do same but with the PCs 
-[PCs, ~, ~ ] = svd(data_clean, 'econ');
-for iEpoch = 1:size(data_prep, 3)
-    d2_pc(:, iEpoch) = mahal((PCs(:, 1:Params.Slepian.Shannon)'*data_prep(:,:,iEpoch))',...
-        (PCs(:, 1:Params.Slepian.Shannon)'*data_clean)'); 
-end
-
-figure, 
-
-plot(d2_pc); 
-title("Mahalanobis distance Pcs"); 
+title("Mahalanobis distance"); 
 xlabel("Time points"); 
 ylabel("Mahalanobis distance"); 
 
@@ -113,14 +97,21 @@ for iEpoch = 1: size(data_prep,3)
     plot(data_prep(SpikeElectrode.indChanlocs(subID), :, iEpoch), 'k')
     hold on; 
     plot(d2(:, iEpoch), 'm'); 
-    plot(d2_pc(:, iEpoch), 'b');
     
     if iEpoch == size(data_prep,3)
-        legend("max ampl", "Mahal Slep", "Mahal PCs");
+        legend("max ampl", "Mahal Dist");
     end
     xlabel("timepoints"); 
     ylim([min(min(min(data_prep))), max(max(d2))]); 
 end
+
+% do same but with the PCs 
+[PCs, ~, ~ ] = svd(data_clean, 'econ');
+for iEpoch = 1:size(data_prep, 3)
+    d2_pc(:, iEpoch) = mahal((PCs(:, 1:Params.Slepian.Shannon)'*data_prep(:,:,iEpoch))', DataCleanSopt'); 
+end
+
+
 
     
 
