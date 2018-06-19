@@ -1,3 +1,9 @@
+- 
+
+algoV1.m
+
+algorithm to detect the spikes based on the Mahalanobis distance in the Slepian space spanned by K optimal Slepians (K is the Shannon number)
+
 ###################
 
 ALGORITHM ( version of the 2018/06/05 —> implementing version 2018/06/05 see algoV1)
@@ -9,10 +15,22 @@ ALGORITHM ( version of the 2018/06/05 —> implementing version 2018/06/05 see a
 (5) Project the resting state data matrix X (NxNt), where Nt is the number of time points), Xsl = SoptX of dimensions (K x Nt) 
 (6) Compute the covariance matrix of the matrix Xsl, Csl = Xsl(Xsl)^t
 (7) The eigenvectors of the Csl = QM(Q)^(-1) describe the axes of the hyperellipsoid within the data
-(8) Obtain the distribution of the Malahanobis distance of each resting state data time point 
-(9) Perform the step (5) for the spike data Xspike, then project the data into the space spanned by the eigenvectors of the covariance matrix Csl, Q. Xspike_sl = QXspike (Ns x Nt_spike)
-(10) Calculate the Malahanobis distance of each timepoint in the spike data
-(11) Define the alpha level and identify which are the time points of the transformed spike data falling within the defined alpha level of the distribution obtained with the resting state data 
+(8) Calculate the Malahanobis distance of each timepoint in the spike data to the resting state data distribution 
+(9) Define the alpha level and identify which are the time points of the transformed spike data falling within the defined alpha level of the distribution obtained with the resting state data 
 
 #################
+
+-
+
+setParams.m 
+
+creates the structure of the parameters that will be used in the algorithms (see the default values within the function description)
+
+- 
+
+test.m 
+
+nothing special. Tried to reproduce the Ttests like in GEM part 1 project. Doesn’t really make sense to do this anymore, but I leave this script there just in case.  
+
+
 

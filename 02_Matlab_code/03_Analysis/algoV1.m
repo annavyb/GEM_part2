@@ -3,7 +3,16 @@
 %
 %  The normal/abnormal points are identified with the treshold malahanobis
 %  calculated in the Slepian space (axes of the covariance matrix of the 
-%  hyperellipsoide of the data) 
+%  hyperellipsoide of the data)
+%  
+%  The Mahalanobis distance method is compared with the PCs space. The
+%  dimension of this space is equal to the Shannon number 
+% 
+%  Question: can we compare the Mahalanobis distance of the different
+%  methods? Is it that when the Mahalanobis distance of one methode is
+%  bigger - then the probability that it does not belong to the
+%  distribution is bigger? 
+%  
 % -------------------------------------------------------------------------
 %
 %  Version: V1 2018 06 16
@@ -49,7 +58,7 @@ SpikeElectrode.indEGI = [1, 225, 210, 181, 67, 220, 220];
 
 % selecting the subject 
 
-subID = 4; 
+subID = 1; 
 Params.Slepian.CONST_SEIZURE_NODE = SpikeElectrode.indChanlocs(subID); 
 
 load(strcat(PathResting,'/sub-', subjects(subID), '_rest_clean_preprocessed.mat')); 
@@ -84,20 +93,21 @@ for iEpoch = 1:size(data_prep, 3)
     d2(:, iEpoch) = mahal((SLopt'*data_prep(:,:,iEpoch))', DataCleanSopt'); 
 end
 
+% do same but with the PCs 
+[PCs, ~, ~ ] = svd(data_clean, 'econ');
+DataCleanPcs = PCs(:, 1:Params.Slepian.Shannon)'*data_clean; 
+for iEpoch = 1:size(data_prep, 3)
+    d2_pc(:, iEpoch) = mahal((PCs(:, 1:Params.Slepian.Shannon)'*data_prep(:,:,iEpoch))',...
+        DataCleanPcs'); 
+end
+
+%% Plots 
+
 figure, 
 plot(d2); 
 title("Mahalanobis distance Slepian"); 
 xlabel("Time points"); 
 ylabel("Mahalanobis distance"); 
-
-
-
-% do same but with the PCs 
-[PCs, ~, ~ ] = svd(data_clean, 'econ');
-for iEpoch = 1:size(data_prep, 3)
-    d2_pc(:, iEpoch) = mahal((PCs(:, 1:Params.Slepian.Shannon)'*data_prep(:,:,iEpoch))',...
-        (PCs(:, 1:Params.Slepian.Shannon)'*data_clean)'); 
-end
 
 figure, 
 

@@ -23,6 +23,13 @@ In the pre-processing phase of the analysis the script preprocessing_spikes.m pe
 1. filtering
 2. bad channels handling 
 
+-
+
+2 main functions in this folder are: 
+
+1. preprocessing_spikes.m 
+2. preprocessing_resting.m 
+
 
 
 

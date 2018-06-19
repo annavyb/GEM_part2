@@ -35,14 +35,10 @@ function [P] = setParams()
 %
 %       'P.Slepian.opt' - | options needed for the function 
 %                         slepEigsLaplacian.m in the SPLdemo folder|
-%       'P.Slepian.opts.issym' - |see the SPL demo package| - 
-%           | default value 1|
-%       'P.Slepian.opts.isreal' - |see the SPL demo package| - 
-%           |default value 1|
-%       'P.Slepian.opts.maxit' - |see the SPL demo package| - 
-%           |default value 2500|
-%       'P.Slepian.opts.disp' - |see the SPL demo package| -
-%           |default value 1|
+%       'P.Slepian.opts.issym 1' - |
+P.Slepian.opts.isreal=1;
+P.Slepian.opts.maxit=2500;
+P.Slepian.opts.disp=1;
 %        
 %                       
 %  The structure 'P' has the following fields 
